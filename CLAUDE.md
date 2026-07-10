@@ -53,6 +53,17 @@ When the user doesn't specify a model, pick one deliberately per delegation inst
 
 An agent that just finished a task retains its context — follow-up work on the same files or a fix informed by its diagnosis is usually better sent to that agent than to a fresh one. Start fresh agents for unrelated work or when parallelism matters more than context.
 
+### External agent CLIs (per-project provider)
+
+A registry entry may specify an `**Agent:**` field naming an external agent CLI (e.g. `copilot`). When delegating work in that project, run the named CLI non-interactively in the project directory via Bash **instead of** spawning a Claude sub-agent — same delegation discipline (precise task, acceptance criteria, verification steps, commit conventions in the prompt), different executor. See `docs/external-agents.md` for invocation details per CLI.
+
+Two modes, distinguished by a `-strict` suffix on the field value:
+
+- **Standard** (e.g. `Agent: copilot`): the external CLI makes all code changes; you may still read the project for context, review the resulting diff, and verify the outcome. Use this when the requirement is "changes are authored by provider X."
+- **Strict** (e.g. `Agent: copilot-strict`): dispatch-and-relay only. Pass the user's task (plus registry-level context) to the CLI, report its results back, and do **not** open the project's files or diffs yourself. Verification must be delegated to the same CLI. Use this when project code must not pass through non-approved LLMs at all.
+
+Cross-project coordination (sequencing, contract awareness, surfacing impacts) remains your job in both modes. The model-selection guidance above doesn't apply to external CLIs — their provider controls the model; don't override it unless the user asks.
+
 ---
 
 ## Conventions

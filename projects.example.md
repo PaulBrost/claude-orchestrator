@@ -13,6 +13,7 @@ Add each project below with its path, purpose, stack, and any cross-project depe
 - **Type:** work | personal
 - **Stack:** (e.g., Node, Postgres, React)
 - **Purpose:** One sentence description.
+- **Agent:** (optional — external agent CLI for this project, e.g. copilot or copilot-strict; omit for Claude sub-agents. See docs/external-agents.md)
 - **Depends on:** (other projects, shared libs, APIs)
 - **Depended on by:** (other projects that consume this one)
 - **Notes:** Anything Claude should know before touching this project.

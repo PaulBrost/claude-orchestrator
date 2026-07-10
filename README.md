@@ -31,3 +31,4 @@ Working on one repo at a time, Claude can't warn you that the API change you jus
 
 - [Getting started with Claude Code](docs/getting-started.md) — install, login, first session
 - [The orchestrator pattern](docs/orchestrator-pattern.md) — how and why this setup works
+- [External agent CLIs](docs/external-agents.md) — per-project LLM providers (e.g., delegate work projects to GitHub Copilot CLI while Claude orchestrates)
