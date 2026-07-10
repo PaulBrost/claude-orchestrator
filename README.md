@@ -27,6 +27,27 @@ Working on one repo at a time, Claude can't warn you that the API change you jus
 | `.claude/settings.local.json` | **no** (gitignored) | Your personal permission grants |
 | `docs/` | yes | Getting started with Claude Code + how this pattern works |
 
+## How is this different from Claude Cowork?
+
+*(As of July 10, 2026 — Cowork is evolving quickly; details below may age.)*
+
+[Claude Cowork](https://support.claude.com/en/articles/12138966-release-notes) is Anthropic's agentic workspace for general knowledge work — desktop, web, and mobile, with cloud-run sessions that continue while your laptop is closed and turnkey connectors for email, calendar, and file services. There's real overlap: both let you hand Claude tasks that run in the background, and Claude Code's remote control gives this setup phone access too.
+
+The differences that matter:
+
+- **Where it runs.** This orchestrator runs on *your* machine, inside your network — it can `docker exec` into local containers, read logs on your servers, hit LAN services, and use your SSH keys and deploy tooling. Cowork's cloud sessions work on synced files and connected apps; your local infrastructure isn't reachable from there.
+- **Engineering-grade orchestration.** Multi-repo git work, parallel sub-agents with per-task model selection, cross-project contract awareness, hooks/skills/fine-grained permissions. Cowork deliberately abstracts all of that away for a non-technical audience.
+- **Multi-provider routing.** Cowork is Claude-only. This setup can dispatch specific projects to other agent CLIs (e.g., a work-mandated GitHub Copilot seat) because it can run arbitrary local tools with your local auth — see [docs/external-agents.md](docs/external-agents.md).
+
+And the trade-offs, honestly:
+
+- **Your machine must be on** — remote control drives the session, but your box is the engine. Cowork's cloud sessions genuinely don't care.
+- **You're the admin** — registry currency, CLAUDE.md hygiene, permission grants, and keeping concurrent agents from colliding all take supervision Cowork handles for you.
+- **Cost management is manual** — no managed usage dashboards; you watch your own spend.
+- **Office-work connectors aren't turnkey** — email/calendar/document tasks need MCP setup here; Cowork does them out of the box.
+
+They're complements: Cowork for laptop-closed knowledge work anywhere, this for coordinating real engineering across your repos, infrastructure, and AI providers.
+
 ## Docs
 
 - [Getting started with Claude Code](docs/getting-started.md) — install, login, first session
