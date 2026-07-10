@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python manage.py check *)",
+      "Bash(python manage.py showmigrations *)",
+      "Bash(python manage.py makemigrations --check *)",
+      "Bash(python manage.py sqlmigrate *)",
+      "Bash(node --check *)"
+    ]
+  }
+}

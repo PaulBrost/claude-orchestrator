@@ -1,0 +1,5 @@
+# Private project registry (copy projects.example.md to projects.md)
+projects.md
+
+# Personal Claude Code permission grants
+.claude/settings.local.json
