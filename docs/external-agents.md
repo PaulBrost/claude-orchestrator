@@ -21,7 +21,7 @@ Some projects come with rules about which AI provider may touch them — an empl
 
 The right mode depends on what the provider rule actually says:
 
-- **`Agent: copilot` (standard)** — "changes must be authored by our provider." The external CLI writes all code; Claude may still read the project for planning context and review diffs for verification.
+- **`Agent: copilot` (standard)** — "our provider does the work by default." The external CLI is the default executor for project tasks; Claude may read the project freely, review diffs for verification, and write directly when the user says so or for orchestrator-driven housekeeping. It's a routing preference, not an isolation rule.
 - **`Agent: copilot-strict` (strict)** — "project code must not pass through other LLMs at all." Claude dispatches the task and relays the CLI's report back, but never opens the project's files or diffs. Verification is delegated to the same CLI. This trades review quality for compliance — Claude can only be as confident as the CLI's own report.
 
 If you're unsure which your policy requires, ask whoever owns the policy — the difference is exactly whether a non-approved model may *read* the code, not just write it.

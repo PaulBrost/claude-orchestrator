@@ -61,7 +61,7 @@ A registry entry may specify an `**Agent:**` field naming an external agent CLI 
 
 Two modes, distinguished by a `-strict` suffix on the field value:
 
-- **Standard** (e.g. `Agent: copilot`): the external CLI makes all code changes; you may still read the project for context, review the resulting diff, and verify the outcome. Use this when the requirement is "changes are authored by provider X."
+- **Standard** (e.g. `Agent: copilot`): the external CLI is the **default executor** — delegate work to it first. You may read the project freely, review diffs, and verify outcomes, and you may write to the project directly when the user says so or the change is orchestrator-driven housekeeping (registry pointers, doc stubs). Use this when the preference is "provider X does the work by default," not a hard isolation rule.
 - **Strict** (e.g. `Agent: copilot-strict`): dispatch-and-relay only. Pass the user's task (plus registry-level context) to the CLI, report its results back, and do **not** open the project's files or diffs yourself. Verification must be delegated to the same CLI. Use this when project code must not pass through non-approved LLMs at all.
 
 Cross-project coordination (sequencing, contract awareness, surfacing impacts) remains your job in both modes. The model-selection guidance above doesn't apply to external CLIs — their provider controls the model; don't override it unless the user asks.
