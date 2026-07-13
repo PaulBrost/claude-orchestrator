@@ -37,6 +37,8 @@ When spawning a sub-agent for a project task, always include:
 - Which files or APIs in other projects may be affected
 - Verification steps the agent must run before committing, and the repo's commit conventions
 - If multiple agents work the same repo concurrently, assign non-overlapping files and tell each agent to `git pull --rebase` if its push is rejected
+- For any code change: the absolute path to `standards/documentation.md`, with an instruction to comply before committing
+- For UI work: the absolute path to the project's UI standard (the `**UI Standard:**` field in its registry entry), with an instruction to read and follow it
 
 Example delegation prompt:
 > "In ~/work/project-a, refactor the user authentication module to support OAuth2. The shared-auth library at ~/work/shared-auth exports the token validation logic — do not duplicate it. project-b consumes project-a's /api/v2/auth endpoint; note any breaking changes but do not modify project-b."
@@ -66,8 +68,20 @@ Cross-project coordination (sequencing, contract awareness, surfacing impacts) r
 
 ---
 
+## Cross-Project Standards
+
+The `standards/` directory holds processes and design rules that apply across projects. Like `projects.md`, it is **private and gitignored**; `standards.example/` is the shareable template. Standards travel **by absolute file path inside the delegation prompt** — sub-agents and external CLIs never read this file, so a standard not referenced in the prompt doesn't exist for them.
+
+- `standards/documentation.md` applies to **every** project; reference it in all code-change delegations.
+- UI standards are per-project: a registry entry may name one in a `**UI Standard:**` field (e.g. `standards/UI_Personal.md`, `standards/UI_ETS.md`). Reference it in UI-work delegations. No field = no UI standard applies; don't guess one.
+- Projects may also carry a pointer line in their own `CLAUDE.md`/`AGENTS.md` referencing these files, so the standards hold even in sessions opened directly in the project. Keep those pointers in sync if standards files are renamed.
+- Enforcement: prevention is the two delegation rules above; detection is the `/audit-docs` skill, which sweeps recent commits across the registry and reports documentation gaps.
+- Evolving a standard: when the user makes a reusable process/design decision mid-task, fold it into the relevant standards file in the same session rather than leaving it only in one delegation prompt.
+
+---
+
 ## Conventions
 
 - This orchestrator directory is a coordination repo (instructions, registry, docs) — never write project code here; delegate into the project directories.
-- `projects.md` is private and gitignored; `projects.example.md` is the shareable template.
+- `projects.md` and `standards/` are private and gitignored; `projects.example.md` and `standards.example/` are the shareable templates.
 - Keep the registry current: when a project's status, dependencies, or gotchas change, update `projects.md` in the same session.

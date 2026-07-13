@@ -3,3 +3,9 @@ projects.md
 
 # Personal Claude Code permission grants
 .claude/settings.local.json
+
+# audit-docs skill state
+.claude/audit-state.local.json
+
+# Private cross-project standards (copy standards.example/ to standards/)
+standards/

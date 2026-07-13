@@ -14,7 +14,12 @@ Working on one repo at a time, Claude can't warn you that the API change you jus
    cp projects.example.md projects.md
    ```
    `projects.md` is gitignored — your project details stay private.
-3. Run `claude` from this directory. On first run, approve the `@projects.md` import when prompted.
+3. (Optional) Copy the cross-project standards templates and adapt them:
+   ```bash
+   cp -r standards.example standards
+   ```
+   `standards/` is gitignored too — these are process/design rules (documentation requirements, UI conventions) the orchestrator injects into every delegation. See the Cross-Project Standards section of `CLAUDE.md`.
+4. Run `claude` from this directory. On first run, approve the `@projects.md` import when prompted.
 
 ## Layout
 
@@ -23,8 +28,11 @@ Working on one repo at a time, Claude can't warn you that the API change you jus
 | `CLAUDE.md` | yes | Generic orchestrator instructions (role, delegation, model selection) |
 | `projects.md` | **no** (gitignored) | Your private project registry, imported by CLAUDE.md |
 | `projects.example.md` | yes | Template to copy for `projects.md` |
+| `standards/` | **no** (gitignored) | Your private cross-project standards (docs process, UI rules), referenced in every delegation |
+| `standards.example/` | yes | Templates to copy for `standards/` |
 | `.claude/settings.json` | yes | Shared read-only tool permissions |
 | `.claude/settings.local.json` | **no** (gitignored) | Your personal permission grants |
+| `.claude/skills/audit-docs/` | yes | `/audit-docs` skill — sweeps registered projects for undocumented recent changes |
 | `docs/` | yes | Getting started with Claude Code + how this pattern works |
 
 ## How is this different from Claude Cowork?
