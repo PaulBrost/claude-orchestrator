@@ -20,9 +20,9 @@ The project registry (which projects exist, their paths, and how they relate) li
 
 ## How to Add a New Project
 
-1. Create the project directory and initialize it (git, package manager, etc.)
-2. Add a `CLAUDE.md` in the project root describing its purpose, stack, conventions, and gotchas.
-3. Add a `.claude/settings.json` if the project needs specific MCP servers or tool permissions.
+1. Create the project directory and initialize it (git, package manager, etc.) if I indicate it's a new project that doesn't exist already.
+2. Add a `CLAUDE.md` in the project root describing its purpose, stack, conventions, and gotchas if one isn't there already.
+3. Add a `.claude/settings.json` if the project needs specific MCP servers or tool permissions, if one doesn't exist already.
 4. Register the project in `projects.md` (copy the template from `projects.example.md`).
 5. Note any dependencies on or from existing projects, and add any invariants to the Cross-Project Rules section of `projects.md`.
 
@@ -31,6 +31,7 @@ The project registry (which projects exist, their paths, and how they relate) li
 ## Delegating to Sub-Agents
 
 When spawning a sub-agent for a project task, always include:
+
 - The absolute project path
 - The specific task and acceptance criteria
 - Any cross-project context the agent needs (don't assume it has read this file)
@@ -41,6 +42,7 @@ When spawning a sub-agent for a project task, always include:
 - For UI work: the absolute path to the project's UI standard (the `**UI Standard:**` field in its registry entry), with an instruction to read and follow it
 
 Example delegation prompt:
+
 > "In ~/work/project-a, refactor the user authentication module to support OAuth2. The shared-auth library at ~/work/shared-auth exports the token validation logic — do not duplicate it. project-b consumes project-a's /api/v2/auth endpoint; note any breaking changes but do not modify project-b."
 
 ### Choosing a model for sub-agents
