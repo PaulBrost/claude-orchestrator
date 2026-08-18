@@ -9,3 +9,6 @@ projects.md
 
 # Private cross-project standards (copy standards.example/ to standards/)
 standards/
+
+# Personal folder link config (copy personal-links.example.conf)
+personal-links.conf

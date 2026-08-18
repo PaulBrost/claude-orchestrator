@@ -25,6 +25,7 @@ The project registry (which projects exist, their paths, and how they relate) li
 3. Add a `.claude/settings.json` if the project needs specific MCP servers or tool permissions, if one doesn't exist already.
 4. Register the project in `projects.md` (copy the template from `projects.example.md`).
 5. Note any dependencies on or from existing projects, and add any invariants to the Cross-Project Rules section of `projects.md`.
+6. Run `./scripts/personal-links.sh --apply` to create the project's personal folder link (see Personal Folders below). It reads paths from `projects.md`, so registering the project in step 4 is what makes it eligible.
 
 ---
 
@@ -79,6 +80,25 @@ The `standards/` directory holds processes and design rules that apply across pr
 - Projects may also carry a pointer line in their own `CLAUDE.md`/`AGENTS.md` referencing these files, so the standards hold even in sessions opened directly in the project. Keep those pointers in sync if standards files are renamed.
 - Enforcement: prevention is the two delegation rules above; detection is the `/audit-docs` skill, which sweeps recent commits across the registry and reports documentation gaps.
 - Evolving a standard: when the user makes a reusable process/design decision mid-task, fold it into the relevant standards file in the same session rather than leaving it only in one delegation prompt.
+
+---
+
+## Personal Folders
+
+Each project may carry one or more symlinks (set by `LINK` entries in `personal-links.conf`, e.g.
+`.brost` → personal notes, `.claude` → Claude Code state) pointing at that project's directory under
+a central tree.
+
+**It is not project content.** Never commit it, never treat what is inside it as project
+documentation, and never cite it as a source of truth about the project — the registry, the
+project's own docs, and the code are authoritative. Read it only when the user points you at it.
+
+The link is excluded globally via `core.excludesFile`, not through any project's `.gitignore`, so it
+should never appear in a project's tracked files. If you see it staged, something is wrong.
+
+Links are created and repaired by `scripts/personal-links.sh`, which reads project paths from
+`projects.md`. They are lost to `git clean -xdf` and to fresh clones; re-running the script with
+`--apply` restores them without touching the content behind them. See `docs/personal-folders.md`.
 
 ---
 
