@@ -1,5 +1,8 @@
 # Private project registry (copy projects.example.md to projects.md)
 projects.md
+# ...and any backup of it. The registry is private; a stray .bak or .orig would
+# commit the whole thing into a repo meant to be shareable.
+projects.md.*
 
 # Personal Claude Code permission grants
 .claude/settings.local.json

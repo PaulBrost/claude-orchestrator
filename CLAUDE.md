@@ -23,7 +23,7 @@ The project registry (which projects exist, their paths, and how they relate) li
 1. Create the project directory and initialize it (git, package manager, etc.) if I indicate it's a new project that doesn't exist already.
 2. Add a `CLAUDE.md` in the project root describing its purpose, stack, conventions, and gotchas if one isn't there already.
 3. Add a `.claude/settings.json` if the project needs specific MCP servers or tool permissions, if one doesn't exist already.
-4. Register the project in `projects.md` (copy the template from `projects.example.md`).
+4. Register the project in `projects.md` (copy the template from `projects.example.md`). Fill in `**Repo:**` and `**Branch:**` — these are what `scripts/bootstrap.sh` uses to rebuild the project on another machine. Use `none` if it has no remote yet, and **never put credentials in the URL** (see Rebuilding on a New Machine below).
 5. Note any dependencies on or from existing projects, and add any invariants to the Cross-Project Rules section of `projects.md`.
 6. Run `./scripts/personal-links.sh --apply` to create the project's personal folder link (see Personal Folders below). It reads paths from `projects.md`, so registering the project in step 4 is what makes it eligible.
 
@@ -99,6 +99,27 @@ should never appear in a project's tracked files. If you see it staged, somethin
 Links are created and repaired by `scripts/personal-links.sh`, which reads project paths from
 `projects.md`. They are lost to `git clean -xdf` and to fresh clones; re-running the script with
 `--apply` restores them without touching the content behind them. See `docs/personal-folders.md`.
+
+---
+
+## Rebuilding on a New Machine
+
+`scripts/bootstrap.sh` reads `**Path:**`, `**Repo:**` and `**Branch:**` from the registry and clones
+any registered project that isn't present. Like `personal-links.sh`, it is safe by default — plain
+invocation reports, `--apply` acts. Full procedure in `docs/new-machine.md`.
+
+- **It gets repositories, not running projects.** Secrets, SSH keys, toolchains and per-project setup
+  are deliberately out of scope; `--checklist` prints them. Don't extend the script to handle
+  secrets — the registry must stay safe to hold plain paths and public remote URLs.
+- **Existing checkouts are checked, never modified.** A remote or branch that disagrees with the
+  registry is reported as `DRIFT` and left alone, in both directions (including a project registered
+  as `none` that turns out to have an origin). Never auto-correct drift: switching branches can
+  discard uncommitted work, and the registry is as likely to be the stale side as the checkout.
+- **Run it as an audit too.** On an established machine it's a cheap consistency check between the
+  registry and reality — exactly the kind of silent drift the registry is supposed to prevent.
+- **Never record credentials in a `**Repo:**` URL.** A `https://user:password@host/repo` remote leaks
+  the password into the registry and every clone's `.git/config`. Authentication belongs in
+  `~/.ssh/config`, a credential helper, or `~/.netrc`.
 
 ---
 

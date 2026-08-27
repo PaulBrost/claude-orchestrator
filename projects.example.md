@@ -6,10 +6,19 @@ Copy this file to `projects.md` (which is gitignored) and fill in your own proje
 
 Add each project below with its path, purpose, stack, and any cross-project dependencies.
 
+`**Repo:**` and `**Branch:**` are what `scripts/bootstrap.sh` uses to clone missing projects on a
+new machine — see `docs/new-machine.md`. Use `none` for anything not version-controlled (planning
+folders, workspaces) or not yet pushed; prefix non-git remotes with the VCS, e.g. `svn+https://…`.
+**Never store credentials in the URL** — a remote like `https://user:password@host/repo` puts a
+password in the registry and in every clone's `.git/config`. Configure auth in `~/.ssh/config`, a
+credential helper, or a `~/.netrc` instead.
+
 ### Template
 ```
 ### [Project Name]
 - **Path:** ~/path/to/project
+- **Repo:** git@github.com:you/project.git | svn+https://host/svn/project | none
+- **Branch:** main
 - **Type:** work | personal
 - **Stack:** (e.g., Node, Postgres, React)
 - **Purpose:** One sentence description.
@@ -24,6 +33,8 @@ Add each project below with its path, purpose, stack, and any cross-project depe
 ```
 ### project-a
 - **Path:** ~/work/project-a
+- **Repo:** git@github.com:you/project-a.git
+- **Branch:** main
 - **Type:** work
 - **Stack:** Node.js, Postgres, REST API
 - **Purpose:** Core billing service.

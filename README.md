@@ -21,6 +21,14 @@ Working on one repo at a time, Claude can't warn you that the API change you jus
    `standards/` is gitignored too — these are process/design rules (documentation requirements, UI conventions) the orchestrator injects into every delegation. See the Cross-Project Standards section of `CLAUDE.md`.
 4. Run `claude` from this directory. On first run, approve the `@projects.md` import when prompted.
 
+Rebuilding this setup on another machine? Port `projects.md` and your keys, then let the registry do the rest:
+```bash
+./scripts/bootstrap.sh            # report which registered projects are missing or drifted
+./scripts/bootstrap.sh --apply    # clone them
+./scripts/bootstrap.sh --checklist  # the secrets/keys/toolchains it deliberately won't touch
+```
+See [docs/new-machine.md](docs/new-machine.md).
+
 ## Layout
 
 | File | Checked in? | Purpose |
@@ -33,6 +41,7 @@ Working on one repo at a time, Claude can't warn you that the API change you jus
 | `.claude/settings.json` | yes | Shared read-only tool permissions |
 | `.claude/settings.local.json` | **no** (gitignored) | Your personal permission grants |
 | `.claude/skills/audit-docs/` | yes | `/audit-docs` skill — sweeps registered projects for undocumented recent changes |
+| `scripts/bootstrap.sh` | yes | Clones registered projects onto a new machine; audits remote/branch drift |
 | `docs/` | yes | Getting started with Claude Code + how this pattern works |
 
 ## How is this different from Claude Cowork?
@@ -60,4 +69,5 @@ They're complements: Cowork for laptop-closed knowledge work anywhere, this for 
 
 - [Getting started with Claude Code](docs/getting-started.md) — install, login, first session
 - [The orchestrator pattern](docs/orchestrator-pattern.md) — how and why this setup works
+- [Setting up a new machine](docs/new-machine.md) — port the registry, clone every project, and what bootstrap deliberately won't do
 - [External agent CLIs](docs/external-agents.md) — per-project LLM providers (e.g., delegate work projects to GitHub Copilot CLI while Claude orchestrates)
