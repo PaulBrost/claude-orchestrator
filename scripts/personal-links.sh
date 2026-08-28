@@ -54,6 +54,7 @@ fi
 LINK_NAMES=()
 LINK_ROOTS=()
 EXCLUDES=()
+EXTRAS=()
 
 trim() { echo "$1" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'; }
 
@@ -82,6 +83,10 @@ while IFS= read -r line || [[ -n "$line" ]]; do
             LINK_ROOTS+=("${root/#\~/$HOME}")
             ;;
         EXCLUDE) EXCLUDES+=("$val") ;;
+        # A path to link that is not a registered project — the workspace roots
+        # and this repo itself. Without it those directories accumulate real
+        # .claude/.brost folders that nothing manages.
+        EXTRA)   EXTRAS+=("${val/#\~/$HOME}") ;;
         *)       echo "warning: ignoring unknown config key '$key'" >&2 ;;
     esac
 done < "$CONFIG"
@@ -94,6 +99,11 @@ done < "$CONFIG"
 mapfile -t PROJECTS < <(
     grep -oP '\*\*Path:\*\*\s*\K.+' "$REGISTRY" | sed 's/[[:space:]]*$//' | grep -v '^$'
 )
+
+# EXTRA paths are linked alongside the registered projects. They are listed
+# second so a path that is somehow both is caught by the collision check below
+# rather than linked twice.
+PROJECTS+=(${EXTRAS[@]+"${EXTRAS[@]}"})
 
 is_excluded() {
     local path="$1" base; base="$(basename "$path")"

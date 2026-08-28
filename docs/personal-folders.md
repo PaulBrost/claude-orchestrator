@@ -185,6 +185,42 @@ from under it.
 - **Skips projects not present on this machine** rather than failing, so the same config works
   across machines that check out different subsets.
 
+## Excluding projects whose contents get copied
+
+Some projects are **build inputs**: their whole directory is rsync'd or copied into a build tree by
+tooling that then walks everything it finds. A symlink pointing at a path that tooling cannot
+resolve becomes a hard failure there.
+
+This is not hypothetical. On 2026-08-21 a PIAAC national PDS build died at the packaging step:
+
+```
+Packaging with electron-packager...
+EACCES: permission denied, stat 'D:\ETS-LSA\BUILDDIR\PDS_SVN_20260821\.brost'
+```
+
+`pds-builder` does `rsync -az "$REPODIR/pds/" "$WD/"` and `cp -r "$REPODIR/QAT-Runtime/"*`, which
+copied `.brost` and `.claude` into the build tree. Windows `node.exe` cannot stat a WSL absolute
+path, and `builder.sh` runs under `set -e`, so the whole build aborted. It would have broken **every
+build on that machine, for every country**, until the links were removed.
+
+**Rule: exclude any project whose directory is copied wholesale by other tooling**, especially when
+the consumer is on a different platform (Windows tools reading a WSL symlink) or inside a container.
+
+```
+EXCLUDE=pds
+EXCLUDE=QAT-Runtime
+```
+
+Two things make this class of failure easy to miss:
+
+- It appears at the **consumer**, not the project — nothing looks wrong in the repo itself.
+- It surfaces only when that tooling next runs, which may be weeks after the links are created. The
+  build above was the first since the links went in.
+
+Before adding a project to the registry, ask whether anything copies its directory somewhere else.
+If so, exclude it: the personal folder buys nothing in a repo you do not sit and work in, and costs
+a broken build.
+
 ## Backing up the tree
 
 The central tree is ordinary content, so back it up however you back up anything else. A private git
