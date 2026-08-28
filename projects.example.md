@@ -2,6 +2,16 @@
 
 Copy this file to `projects.md` (which is gitignored) and fill in your own projects. `CLAUDE.md` imports `projects.md` at session start.
 
+## Index vs. detail
+
+`projects.md` is imported into **every** session, so it should stay thin: routing metadata (path, repo, branch, type, agent, stack, one-line purpose, dependencies) plus the cross-project contracts. That is what the orchestrator needs to decide *where* work goes.
+
+Everything else — accumulated gotchas, incident history, as-built notes, deployment specifics — belongs in a per-project detail file at **`registry/<name>.md`**, loaded on demand. Add a `**Detail:** \`registry/<name>.md\`` field to the entry to point at it.
+
+Rule of thumb: split an entry out once it grows past a screenful. Keep writing new knowledge to the detail file; touch the index only when routing metadata changes. `registry/` is gitignored alongside `projects.md`.
+
+A detail file need not map to a single project — a shared infrastructure file (`registry/infra.md`) or the full text behind the cross-project rules works the same way.
+
 ## Projects
 
 Add each project below with its path, purpose, stack, and any cross-project dependencies.
@@ -26,7 +36,8 @@ credential helper, or a `~/.netrc` instead.
 - **UI Standard:** (optional — which standards/UI_*.md file governs this project's UI work; omit for non-UI projects)
 - **Depends on:** (other projects, shared libs, APIs)
 - **Depended on by:** (other projects that consume this one)
-- **Notes:** Anything Claude should know before touching this project.
+- **Notes:** Anything Claude should know before touching this project. Move this to registry/<name>.md once it outgrows a few lines.
+- **Detail:** `registry/<name>.md` (optional — omit while the entry is small enough to keep whole)
 ```
 
 ### Example
@@ -48,6 +59,8 @@ credential helper, or a `~/.netrc` instead.
 ## Cross-Project Rules
 
 Invariants Claude should check before and after cross-cutting changes. Examples: API contracts between your projects, shared libraries that must be version-bumped in consumers, auth providers other apps depend on.
+
+Keep these resident but **one line each** — enough to know a contract exists and which projects it touches. Push the mechanism, history and commit trail into `registry/cross-project-rules.md`.
 
 - (add yours here)
 

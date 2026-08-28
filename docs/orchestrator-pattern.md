@@ -9,7 +9,7 @@ Each of your projects has its own repo, its own `CLAUDE.md`, its own conventions
 The orchestrator is that map. You run `claude` from this directory, and the session starts with:
 
 1. **Generic orchestrator instructions** (`CLAUDE.md`) — the role: delegate code changes into project directories, watch cross-project impacts, keep the registry current.
-2. **Your private registry** (`projects.md`, imported via `@projects.md`) — every project's path, stack, purpose, dependencies, and the invariants that must hold across them.
+2. **Your private registry** (`projects.md`, imported via `@projects.md`) — every project's path, stack, purpose, dependencies, and the invariants that must hold across them. It is an **index**: because it loads into every session it stays thin, and each project's accumulated detail lives in `registry/<name>.md`, read on demand.
 3. **Persistent memory** — Claude Code's per-project memory accumulates the state of ongoing efforts across sessions, so "continue where we left off" works.
 
 ## How work gets done
@@ -24,7 +24,7 @@ The orchestrator doesn't edit project code itself. It:
 
 ## What goes in the registry
 
-The private `projects.md` is the highest-leverage file. Beyond the per-project entries, keep:
+The private registry is the highest-leverage part of the setup. Keep the index thin — it is the tax you pay on every session — and push detail into `registry/<name>.md`. Beyond the per-project entries, keep:
 
 - **Cross-Project Rules** — contracts that break silently: "app A calls app B's REST API with this shape", "this shared lib must be re-installed in consumers after changes", "app C is an OAuth provider for external apps".
 - **Workspace & Deployment** — how code actually ships ("a local commit does not deploy" has to be written down somewhere).

@@ -6,6 +6,19 @@ The project registry (which projects exist, their paths, and how they relate) li
 
 @projects.md
 
+### The registry is an index, not the whole story
+
+`projects.md` carries **routing metadata only** — path, repo, branch, type, agent, stack, purpose, dependencies, and the cross-project contracts. It is imported into every session, so it is deliberately thin.
+
+**The bulk of each project's knowledge lives in `registry/<name>.md`, loaded on demand.** An entry with a `**Detail:**` field is a summary; entries without one are complete as shown.
+
+- **Read the detail file before substantive work** in that project — diagnosis, design, or writing a delegation prompt. The summary is enough to route; it is not enough to act.
+- **Write new project knowledge to the detail file**, not the index. The index only changes when routing metadata changes (a moved path, a new remote, a changed dependency, a status flip worth seeing without loading anything).
+- If a project has no detail file and its entry grows past a screenful, split it out and add the `**Detail:**` pointer.
+- `registry/` is private and gitignored exactly like `projects.md`.
+
+Two detail files are not projects: `registry/brost-infra.md` (live infrastructure — request path, Cloudflare/NPM, TLS and certs, CrowdSec, deploy flow) and `registry/cross-project-rules.md` (full mechanism and history behind the contracts summarised in the index).
+
 ---
 
 ## Your Role
@@ -34,6 +47,7 @@ The project registry (which projects exist, their paths, and how they relate) li
 When spawning a sub-agent for a project task, always include:
 
 - The absolute project path
+- **Anything the project's `registry/<name>.md` says the agent needs** — read it first; sub-agents start with empty context and never see the registry
 - The specific task and acceptance criteria
 - Any cross-project context the agent needs (don't assume it has read this file)
 - Which files or APIs in other projects may be affected
@@ -41,6 +55,7 @@ When spawning a sub-agent for a project task, always include:
 - If multiple agents work the same repo concurrently, assign non-overlapping files and tell each agent to `git pull --rebase` if its push is rejected
 - For any code change: the absolute path to `standards/documentation.md`, with an instruction to comply before committing
 - For UI work: the absolute path to the project's UI standard (the `**UI Standard:**` field in its registry entry), with an instruction to read and follow it
+- **When the executor is an external CLI, a standards *path* is not enough** — the CLI must be granted access to that path (for Copilot: `--add-dir /mnt/h/claude-orchestrator/standards`) or the standard's text must be inlined in the prompt. Without it the read fails and the dispatch still reports success on everything else. See `docs/external-agents.md`.
 
 Example delegation prompt:
 
@@ -60,7 +75,9 @@ An agent that just finished a task retains its context — follow-up work on the
 
 ### External agent CLIs (per-project provider)
 
-A registry entry may specify an `**Agent:**` field naming an external agent CLI (e.g. `copilot`). When delegating work in that project, run the named CLI non-interactively in the project directory via Bash **instead of** spawning a Claude sub-agent — same delegation discipline (precise task, acceptance criteria, verification steps, commit conventions in the prompt), different executor. See `docs/external-agents.md` for invocation details per CLI.
+> **Currently dormant.** As of **2026-08-28** no project sets an `**Agent:**` field — every project delegates to Claude sub-agents. The mechanism below is retained because it is the supported way to honour a provider policy, and re-enabling it is a one-line registry edit. Until a project sets the field, skip this section: use the sub-agent rules above, and note that the model-selection guidance now applies everywhere.
+
+A registry entry may specify an `**Agent:**` field naming an external agent CLI (e.g. `copilot`). When delegating work in that project, run the named CLI non-interactively in the project directory via Bash **instead of** spawning a Claude sub-agent — same delegation discipline (precise task, acceptance criteria, verification steps, commit conventions in the prompt), different executor. See `docs/external-agents.md` for invocation details per CLI — **including the `--add-dir` requirement for standards files, which is easy to omit and fails silently.**
 
 Two modes, distinguished by a `-strict` suffix on the field value:
 
@@ -73,7 +90,7 @@ Cross-project coordination (sequencing, contract awareness, surfacing impacts) r
 
 ## Cross-Project Standards
 
-The `standards/` directory holds processes and design rules that apply across projects. Like `projects.md`, it is **private and gitignored**; `standards.example/` is the shareable template. Standards travel **by absolute file path inside the delegation prompt** — sub-agents and external CLIs never read this file, so a standard not referenced in the prompt doesn't exist for them.
+The `standards/` directory holds processes and design rules that apply across projects. Like `projects.md`, it is **private and gitignored**; `standards.example/` is the shareable template. Standards travel **by absolute file path inside the delegation prompt** — sub-agents and external CLIs never read this file, so a standard not referenced in the prompt doesn't exist for them. **For external CLIs the path must also be made readable** (Copilot sandboxes to its working directory; `--allow-all-tools` does not lift that), or the standard silently never arrives — verified 2026-08-28, see `docs/external-agents.md`.
 
 - `standards/documentation.md` applies to **every** project; reference it in all code-change delegations.
 - UI standards are per-project: a registry entry may name one in a `**UI Standard:**` field (e.g. `standards/UI_Personal.md`, `standards/UI_ETS.md`). Reference it in UI-work delegations. No field = no UI standard applies; don't guess one.
@@ -126,5 +143,5 @@ invocation reports, `--apply` acts. Full procedure in `docs/new-machine.md`.
 ## Conventions
 
 - This orchestrator directory is a coordination repo (instructions, registry, docs) — never write project code here; delegate into the project directories.
-- `projects.md` and `standards/` are private and gitignored; `projects.example.md` and `standards.example/` are the shareable templates.
-- Keep the registry current: when a project's status, dependencies, or gotchas change, update `projects.md` in the same session.
+- `projects.md`, `registry/` and `standards/` are private and gitignored; `projects.example.md` and `standards.example/` are the shareable templates.
+- Keep the registry current: when a project's status, dependencies, or gotchas change, update it in the same session — **gotchas and knowledge go in `registry/<name>.md`, routing metadata in `projects.md`.**

@@ -15,7 +15,7 @@ Audit every registered project for code changes that were committed without the 
 
 ## Procedure
 
-1. Read `projects.md` for the project list, paths, `Agent:` fields, and dependency relationships. Read `standards/documentation.md` so you can quote the actual requirements in agent prompts.
+1. Read `projects.md` for the project list, paths, `Agent:` fields, and dependency relationships — that index is enough to plan the sweep. Pull a project's `registry/<name>.md` only when a finding needs its detail. Read `standards/documentation.md` so you can quote the actual requirements in agent prompts.
 2. Skip projects whose path doesn't exist or isn't a git repo (note them in the report).
 3. **Strict-mode projects** (`Agent:` value ending in `-strict`): do NOT read their files or diffs. Dispatch the audit to that project's named CLI instead (per `docs/external-agents.md`), passing the documentation standard's requirements inline in the prompt, and relay its findings.
 4. For all other projects, fan out **parallel read-only Explore agents**, one per project. Each agent's prompt must include:

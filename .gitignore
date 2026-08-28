@@ -4,6 +4,10 @@ projects.md
 # commit the whole thing into a repo meant to be shareable.
 projects.md.*
 
+# Per-project detail files split out of the registry. Same content, same
+# privacy: these hold the bulk of the project knowledge and must never ship.
+registry/
+
 # Personal Claude Code permission grants
 .claude/settings.local.json
 

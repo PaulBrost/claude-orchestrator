@@ -34,7 +34,8 @@ See [docs/new-machine.md](docs/new-machine.md).
 | File | Checked in? | Purpose |
 |---|---|---|
 | `CLAUDE.md` | yes | Generic orchestrator instructions (role, delegation, model selection) |
-| `projects.md` | **no** (gitignored) | Your private project registry, imported by CLAUDE.md |
+| `projects.md` | **no** (gitignored) | Your private project registry (index: routing metadata + cross-project rules), imported by CLAUDE.md |
+| `registry/` | **no** (gitignored) | Per-project detail files, loaded on demand — the bulk of your project knowledge |
 | `projects.example.md` | yes | Template to copy for `projects.md` |
 | `standards/` | **no** (gitignored) | Your private cross-project standards (docs process, UI rules), referenced in every delegation |
 | `standards.example/` | yes | Templates to copy for `standards/` |
@@ -54,7 +55,7 @@ The differences that matter:
 
 - **Where it runs.** This orchestrator runs on *your* machine, inside your network — it can `docker exec` into local containers, read logs on your servers, hit LAN services, and use your SSH keys and deploy tooling. Cowork's cloud sessions work on synced files and connected apps; your local infrastructure isn't reachable from there.
 - **Engineering-grade orchestration.** Multi-repo git work, parallel sub-agents with per-task model selection, cross-project contract awareness, hooks/skills/fine-grained permissions. Cowork deliberately abstracts all of that away for a non-technical audience.
-- **Multi-provider routing.** Cowork is Claude-only. This setup can dispatch specific projects to other agent CLIs (e.g., a work-mandated GitHub Copilot seat) because it can run arbitrary local tools with your local auth — see [docs/external-agents.md](docs/external-agents.md).
+- **Multi-provider routing.** Cowork is Claude-only. This setup *can* dispatch specific projects to other agent CLIs (e.g., a work-mandated GitHub Copilot seat) because it can run arbitrary local tools with your local auth — see [docs/external-agents.md](docs/external-agents.md).
 
 And the trade-offs, honestly:
 
@@ -70,4 +71,5 @@ They're complements: Cowork for laptop-closed knowledge work anywhere, this for 
 - [Getting started with Claude Code](docs/getting-started.md) — install, login, first session
 - [The orchestrator pattern](docs/orchestrator-pattern.md) — how and why this setup works
 - [Setting up a new machine](docs/new-machine.md) — port the registry, clone every project, and what bootstrap deliberately won't do
-- [External agent CLIs](docs/external-agents.md) — per-project LLM providers (e.g., delegate work projects to GitHub Copilot CLI while Claude orchestrates)
+- [Agents, skills and standards](docs/agents-skills-standards.md) — which of the three a piece of reusable knowledge wants to be, and why a cast of role agents usually isn't the answer
+- [External agent CLIs](docs/external-agents.md) — per-project LLM providers (e.g., delegate work projects to GitHub Copilot CLI while Claude orchestrates) — *mechanism retained, not currently in use*
